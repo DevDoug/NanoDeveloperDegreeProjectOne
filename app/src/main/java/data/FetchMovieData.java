@@ -3,17 +3,17 @@ package data;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
-
-import com.example.douglas.popularmovies.MainActivity;
+import android.widget.GridView;
+import android.widget.ListAdapter;
 import com.example.douglas.popularmovies.R;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-
+import java.util.ArrayList;
+import entity.Movie;
 import adapters.MovieAdapter;
 import tools.MovieDataParser;
 
@@ -23,9 +23,16 @@ import tools.MovieDataParser;
 public class FetchMovieData extends AsyncTask<String, Void, Void> {
 
     public Context mContext;
+    private GridView mMoviesGrid;
+    private ListAdapter mMoviesAdapter;
+    public ArrayList<Movie> mMovies;
+    private String mMovieJsonStr = null;
+    public boolean mSortByMostPopular;
 
-    public FetchMovieData(Context context) {
+    public FetchMovieData(Context context, GridView grid, boolean sortType) {
         mContext = context;
+        this.mMoviesGrid = grid;
+        this.mSortByMostPopular = sortType;
     }
 
     @Override
@@ -37,7 +44,11 @@ public class FetchMovieData extends AsyncTask<String, Void, Void> {
         BufferedReader reader = null;
 
         try {
-            URL url = new URL(getString(R.string.picasso_url_popular_movies));
+            URL url;
+            if(mSortByMostPopular)
+                url = new URL(mContext.getString(R.string.picasso_url_popular_movies));
+            else
+                url = new URL(mContext.getString(R.string.picasso_url_highest_rated));
 
             // Create the request to OpenWeatherMap, and open the connection
             urlConnection = (HttpURLConnection) url.openConnection();
@@ -90,11 +101,10 @@ public class FetchMovieData extends AsyncTask<String, Void, Void> {
     @Override
     protected void onPostExecute(Void aVoid) {
         super.onPostExecute(aVoid);
-        if (mMovieJsonStr != null) {
-            mPosterMoviePaths = MovieDataParser.getMoviePosterPaths(mMovieJsonStr);
-        }
-        mMoviesAdapter = new MovieAdapter(MainActivity.this, mPosterMoviePaths);
+        if(mMovieJsonStr != null)
+            mMovies = MovieDataParser.getMovieData(mMovieJsonStr);
+
+        mMoviesAdapter = new MovieAdapter(mContext, mMovies);
         mMoviesGrid.setAdapter(mMoviesAdapter);
-        Log.i("MoviesGrid", String.valueOf(mMoviesGrid.getChildCount()));
     }
 }

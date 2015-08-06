@@ -2,6 +2,7 @@ package adapters;
 
 import android.app.Activity;
 import android.content.Context;
+import android.media.Image;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,14 +14,16 @@ import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
+import entity.Movie;
+
 /**
  * Created by Douglas on 7/28/2015.
  */
 public class MovieAdapter extends ArrayAdapter {
     private Context mContext;
-    private ArrayList<String> mItems;
+    private ArrayList<Movie> mItems;
 
-    public MovieAdapter(Context context, ArrayList<String> objects) {
+    public MovieAdapter(Context context, ArrayList<Movie> objects) {
         super(context, R.layout.movie_grid_item, objects);
         this.mContext = context;
         this.mItems = objects;
@@ -37,8 +40,13 @@ public class MovieAdapter extends ArrayAdapter {
         }
 
         ImageView image = (ImageView) convertView.findViewById(R.id.movie_image);
-        String movieposterurl = (getString(R.string.moviedb_base_url).concat(getString(R.string.moviedb_size_w185)).concat(mItems.get(position)));
+        ImageView imagelarge = (ImageView) convertView.findViewById(R.id.movie_image_large);
+        String movieposterurl = (mContext.getString(R.string.moviedb_base_url).concat(mContext.getString(R.string.moviedb_size_w185)).concat(mItems.get(position).getPath()));
+        String movieposterurllarge = (mContext.getString(R.string.moviedb_base_url).concat(mContext.getString(R.string.moviedb_size_w500)).concat(mItems.get(position).getPath()));
         Picasso.with(mContext).load(movieposterurl).into(image);
+        Picasso.with(mContext).load(movieposterurllarge).into(imagelarge);
+        image.setTag(mItems.get(position));
+
         return convertView;
     }
 }
