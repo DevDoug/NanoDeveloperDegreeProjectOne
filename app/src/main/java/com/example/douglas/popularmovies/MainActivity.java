@@ -1,0 +1,82 @@
+package com.example.douglas.popularmovies;
+
+import android.app.Activity;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.GridView;
+import android.widget.ImageView;
+
+import java.io.ByteArrayOutputStream;
+
+import entity.Movie;
+import data.FetchMovieData;
+import popularmovieconstants.Constants;
+
+public class MainActivity extends Activity implements AdapterView.OnItemClickListener {
+
+    private GridView mMoviesGrid;
+    private static boolean mSortByMostPopular = false;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        mMoviesGrid = (GridView) findViewById(R.id.movie_list_grid);
+        mMoviesGrid.setOnItemClickListener(this);
+        new FetchMovieData(this, mMoviesGrid, true).execute();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.action_settings) {
+            return true;
+        }
+        if (id == R.id.action_sort) {
+            new FetchMovieData(this, mMoviesGrid,mSortByMostPopular).execute();
+            mSortByMostPopular = !mSortByMostPopular;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) { //onclicking an item go to the detail view with and populate it with that moves data
+        ImageView imagelarge = (ImageView) view.findViewById(R.id.movie_image_large);
+        Bitmap posterimagelarge = Constants.getImageFromImageView(imagelarge.getDrawable());
+
+        ByteArrayOutputStream bstreamlarge = new ByteArrayOutputStream();
+        posterimagelarge.compress(Bitmap.CompressFormat.PNG, 100, bstreamlarge);
+        byte[] byteArrayLarge = bstreamlarge.toByteArray();
+
+        Intent movieDetailsIntent = new Intent(this,MovieDetailActivity.class);
+        Movie selectedmovie = (Movie) view.findViewById(R.id.movie_image).getTag();
+        movieDetailsIntent.putExtra(getString(R.string.moviedb_title_field),selectedmovie.getTitle());
+        movieDetailsIntent.putExtra(getString(R.string.moviedb_poster_path_field),selectedmovie.getPath());
+        movieDetailsIntent.putExtra(getString(R.string.movie_image_field),byteArrayLarge);
+        movieDetailsIntent.putExtra(getString(R.string.moviedb_overview_field), selectedmovie.getOverview());
+        movieDetailsIntent.putExtra(getString(R.string.moviedb_vote_average_field),selectedmovie.getVoteAverage());
+        movieDetailsIntent.putExtra(getString(R.string.moviedb_release_date_field), selectedmovie.getReleaseDate());
+        startActivity(movieDetailsIntent);
+    }
+}
