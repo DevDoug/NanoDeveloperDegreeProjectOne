@@ -3,9 +3,6 @@ package com.example.douglas.popularmovies;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -16,11 +13,12 @@ import android.widget.ImageView;
 
 import java.io.ByteArrayOutputStream;
 
+import Listeners.ITaskCompleteListener;
+import adapters.MovieAdapter;
 import entity.Movie;
 import data.FetchMovieData;
-import popularmovieconstants.Constants;
 
-public class MainActivity extends Activity implements AdapterView.OnItemClickListener {
+public class MainActivity extends Activity implements AdapterView.OnItemClickListener, ITaskCompleteListener {
 
     private GridView mMoviesGrid;
     private static boolean mSortByMostPopular = false;
@@ -31,7 +29,7 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
         setContentView(R.layout.activity_main);
         mMoviesGrid = (GridView) findViewById(R.id.movie_list_grid);
         mMoviesGrid.setOnItemClickListener(this);
-        new FetchMovieData(this, mMoviesGrid, true).execute();
+        new FetchMovieData(this, mMoviesGrid, true,this).execute();
     }
 
     @Override
@@ -53,11 +51,21 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
             return true;
         }
         if (id == R.id.action_sort) {
-            new FetchMovieData(this, mMoviesGrid,mSortByMostPopular).execute();
+            new FetchMovieData(this, mMoviesGrid,mSortByMostPopular,this).execute();
             mSortByMostPopular = !mSortByMostPopular;
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        // Save the user's current game state
+/*        savedInstanceState.putInt(STATE_SCORE, mCurrentScore);
+        savedInstanceState.putInt(STATE_LEVEL, mCurrentLevel);*/
+
+        // Always call the superclass so it can save the view hierarchy state
+        super.onSaveInstanceState(savedInstanceState);
     }
 
     @Override
@@ -73,10 +81,18 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
         Movie selectedmovie = (Movie) view.findViewById(R.id.movie_image).getTag();
         movieDetailsIntent.putExtra(getString(R.string.moviedb_title_field),selectedmovie.getTitle());
         movieDetailsIntent.putExtra(getString(R.string.moviedb_poster_path_field),selectedmovie.getPath());
-        movieDetailsIntent.putExtra(getString(R.string.movie_image_field),byteArrayLarge);
+        movieDetailsIntent.putExtra(getString(R.string.movie_image_field),selectedmovie.getPath());
         movieDetailsIntent.putExtra(getString(R.string.moviedb_overview_field), selectedmovie.getOverview());
         movieDetailsIntent.putExtra(getString(R.string.moviedb_vote_average_field),selectedmovie.getVoteAverage());
         movieDetailsIntent.putExtra(getString(R.string.moviedb_release_date_field), selectedmovie.getReleaseDate());
         startActivity(movieDetailsIntent);
+    }
+
+    @Override
+    public void onTaskCompleted() {
+        if(Constants.mMovies != null) {
+            Constants.mMoviesAdapter = new MovieAdapter(this, Constants.mMovies);
+            mMoviesGrid.setAdapter(Constants.mMoviesAdapter);
+        }
     }
 }
