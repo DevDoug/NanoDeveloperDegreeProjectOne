@@ -14,6 +14,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 import Listeners.ITaskCompleteListener;
+import popularmovieconstants.constants;
 import tools.MovieDataParser;
 
 /**
@@ -101,7 +102,7 @@ public class FetchMovieData extends AsyncTask<String, Void, Void> {
     protected void onPostExecute(Void aVoid) {
         super.onPostExecute(aVoid);
         if(mMovieJsonStr != null)
-            Constants.mMovies = MovieDataParser.getMovieData(mMovieJsonStr);
+            constants.mMovies = MovieDataParser.getMovieData(mMovieJsonStr);
 
         mTaskCompleteListener.onTaskCompleted(); //Task completed alert UI that we have our data
     }

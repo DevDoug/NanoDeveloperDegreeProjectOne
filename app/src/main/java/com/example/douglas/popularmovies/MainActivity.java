@@ -17,6 +17,7 @@ import Listeners.ITaskCompleteListener;
 import adapters.MovieAdapter;
 import entity.Movie;
 import data.FetchMovieData;
+import popularmovieconstants.constants;
 
 public class MainActivity extends Activity implements AdapterView.OnItemClickListener, ITaskCompleteListener {
 
@@ -29,7 +30,14 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
         setContentView(R.layout.activity_main);
         mMoviesGrid = (GridView) findViewById(R.id.movie_list_grid);
         mMoviesGrid.setOnItemClickListener(this);
-        new FetchMovieData(this, mMoviesGrid, true,this).execute();
+
+        // Check whether we're recreating a previously destroyed instance
+        if (savedInstanceState != null) {
+            // Restore value of members from saved state
+            this.onTaskCompleted();
+        } else {
+            new FetchMovieData(this, mMoviesGrid, true,this).execute();
+        }
     }
 
     @Override
@@ -71,7 +79,7 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) { //onclicking an item go to the detail view with and populate it with that moves data
         ImageView imagelarge = (ImageView) view.findViewById(R.id.movie_image_large);
-        Bitmap posterimagelarge = Constants.getImageFromImageView(imagelarge.getDrawable());
+        Bitmap posterimagelarge = constants.getImageFromImageView(imagelarge.getDrawable());
 
         ByteArrayOutputStream bstreamlarge = new ByteArrayOutputStream();
         posterimagelarge.compress(Bitmap.CompressFormat.PNG, 100, bstreamlarge);
@@ -90,9 +98,9 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
 
     @Override
     public void onTaskCompleted() {
-        if(Constants.mMovies != null) {
-            Constants.mMoviesAdapter = new MovieAdapter(this, Constants.mMovies);
-            mMoviesGrid.setAdapter(Constants.mMoviesAdapter);
+        if(constants.mMovies != null) {
+            constants.mMoviesAdapter = new MovieAdapter(this, constants.mMovies);
+            mMoviesGrid.setAdapter(constants.mMoviesAdapter);
         }
     }
 }
