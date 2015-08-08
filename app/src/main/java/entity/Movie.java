@@ -16,8 +16,6 @@ public class Movie {
 
     public String mReleaseDate;
 
-/*    public Bitmap mPosterImage;*/
-
     public String getPath() {
         return mPath;
     }
@@ -58,11 +56,4 @@ public class Movie {
         this.mReleaseDate = ReleaseDate;
     }
 
-/*    public Bitmap getPosterImage() {
-        return mPosterImage;
-    }
-
-    public void setPosterImage(Bitmap posterImage) {
-        mPosterImage = posterImage;
-    }*/
 }

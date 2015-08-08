@@ -27,5 +27,4 @@
                 android:value="com.example.douglas.popularmovies.MainActivity" />
         </activity>
     </application>
-
 </manifest>

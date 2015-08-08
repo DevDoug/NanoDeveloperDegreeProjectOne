@@ -4,7 +4,6 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.GridView;
-
 import com.example.douglas.popularmovies.R;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -12,9 +11,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-
-import Listeners.ITaskCompleteListener;
-import popularmovieconstants.constants;
+import listeners.ITaskCompleteListener;
+import popularmovieconstants.Constants;
 import tools.MovieDataParser;
 
 /**
@@ -102,7 +100,7 @@ public class FetchMovieData extends AsyncTask<String, Void, Void> {
     protected void onPostExecute(Void aVoid) {
         super.onPostExecute(aVoid);
         if(mMovieJsonStr != null)
-            constants.mMovies = MovieDataParser.getMovieData(mMovieJsonStr);
+            Constants.mMovies = MovieDataParser.getMovieData(mMovieJsonStr);
 
         mTaskCompleteListener.onTaskCompleted(); //Task completed alert UI that we have our data
     }

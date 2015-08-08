@@ -6,9 +6,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import com.squareup.picasso.Picasso;
-
 import entity.Movie;
 
 public class MovieDetailActivity extends Activity {

@@ -2,22 +2,17 @@ package com.example.douglas.popularmovies;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
-import android.widget.ImageView;
-
-import java.io.ByteArrayOutputStream;
-
-import Listeners.ITaskCompleteListener;
+import listeners.ITaskCompleteListener;
 import adapters.MovieAdapter;
 import entity.Movie;
 import data.FetchMovieData;
-import popularmovieconstants.constants;
+import popularmovieconstants.Constants;
 
 public class MainActivity extends Activity implements AdapterView.OnItemClickListener, ITaskCompleteListener {
 
@@ -78,13 +73,6 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) { //onclicking an item go to the detail view with and populate it with that moves data
-        ImageView imagelarge = (ImageView) view.findViewById(R.id.movie_image_large);
-        Bitmap posterimagelarge = constants.getImageFromImageView(imagelarge.getDrawable());
-
-        ByteArrayOutputStream bstreamlarge = new ByteArrayOutputStream();
-        posterimagelarge.compress(Bitmap.CompressFormat.PNG, 100, bstreamlarge);
-        byte[] byteArrayLarge = bstreamlarge.toByteArray();
-
         Intent movieDetailsIntent = new Intent(this,MovieDetailActivity.class);
         Movie selectedmovie = (Movie) view.findViewById(R.id.movie_image).getTag();
         movieDetailsIntent.putExtra(getString(R.string.moviedb_title_field),selectedmovie.getTitle());
@@ -98,9 +86,9 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
 
     @Override
     public void onTaskCompleted() {
-        if(constants.mMovies != null) {
-            constants.mMoviesAdapter = new MovieAdapter(this, constants.mMovies);
-            mMoviesGrid.setAdapter(constants.mMoviesAdapter);
+        if(Constants.mMovies != null) {
+            Constants.mMoviesAdapter = new MovieAdapter(this, Constants.mMovies);
+            mMoviesGrid.setAdapter(Constants.mMoviesAdapter);
         }
     }
 }
