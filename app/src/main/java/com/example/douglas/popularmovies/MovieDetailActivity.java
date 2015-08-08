@@ -21,7 +21,7 @@ public class MovieDetailActivity extends Activity {
     public Movie mMovie = new Movie();
     public TextView mMovieTitleText;
     public ImageView mMoviePoster;
-    public EditText mMovieOverview;
+    public TextView mMovieOverview;
     public TextView mMovieVoteAverageText;
     public TextView mMovieDateReleasedfield;
 
@@ -43,7 +43,7 @@ public class MovieDetailActivity extends Activity {
 
         mMovieTitleText = (TextView) findViewById(R.id.movie_title);
         mMoviePoster = (ImageView) findViewById(R.id.movie_poster_detail);
-        mMovieOverview = (EditText) findViewById(R.id.movie_overview);
+        mMovieOverview = (TextView) findViewById(R.id.movie_overview);
         mMovieVoteAverageText = (TextView) findViewById(R.id.movie_average);
         mMovieDateReleasedfield = (TextView) findViewById(R.id.movie_release_date_field);
 
