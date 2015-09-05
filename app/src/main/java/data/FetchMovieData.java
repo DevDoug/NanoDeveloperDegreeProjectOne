@@ -34,6 +34,8 @@ public class FetchMovieData {
     private VideoJSON mMovieVideos;
     public static boolean mSortByMostPopular = true;
     ITaskCompleteListener mTaskCompleteListener;
+    public String reviewid;
+    public String trailerid;
 
     public FetchMovieData(Context context,ITaskCompleteListener listener) {
         mContext = context;
@@ -48,6 +50,14 @@ public class FetchMovieData {
         new FetchReviews().execute();
     }
 
+    public void setReviewID(String reviewid){
+        this.reviewid = reviewid;
+    }
+
+    public void setTrailerID(String trailerid){
+        this.trailerid = trailerid;
+    }
+
     public void getVideos() {
         new FetchTrailers().execute();
     }
@@ -57,7 +67,6 @@ public class FetchMovieData {
         @Override
         protected Void doInBackground(String... params) {
             WebService service = new WebService();
-            //TODO Re-Implement sorting
             mMovieData = service.getMovies(mSortByMostPopular);
             return null;
         }
@@ -68,7 +77,7 @@ public class FetchMovieData {
             if(mMovieData != null)
                 Constants.mMovies = MovieDataParser.getMovieData(mMovieData);
 
-            mTaskCompleteListener.onTaskCompleted(); //Task completed alert UI that we have our data
+            mTaskCompleteListener.onFetchMovieTaskCompleted(); //Task completed alert UI that we have our data
         }
     }
 
@@ -77,7 +86,7 @@ public class FetchMovieData {
         @Override
         protected Void doInBackground(String... params) {
             WebService service = new WebService();
-            mMovieReviews = service.getReviews();
+            mMovieReviews = service.getReviews(reviewid);
             return null;
         }
 
@@ -87,7 +96,7 @@ public class FetchMovieData {
             if(mMovieReviews != null)
                 Constants.mReviews = MovieDataParser.getReviewData(mMovieReviews);
 
-            mTaskCompleteListener.onTaskCompleted(); //Task completed alert UI that we have our data
+            mTaskCompleteListener.onFetchReviewsTaskCompleted(); //Task completed alert UI that we have our data
         }
     }
 
@@ -96,7 +105,7 @@ public class FetchMovieData {
         @Override
         protected Void doInBackground(String... params) {
             WebService service = new WebService();
-            mMovieVideos = service.getVideos();
+            mMovieVideos = service.getVideos(trailerid);
             return null;
         }
 
@@ -106,7 +115,7 @@ public class FetchMovieData {
             if(mMovieVideos != null)
                 Constants.mTrailers = MovieDataParser.getVideoData(mMovieVideos);
 
-            mTaskCompleteListener.onTaskCompleted(); //Task completed alert UI that we have our data
+            mTaskCompleteListener.onFetchTrailerTaskCompleted(); //Task completed alert UI that we have our data
         }
     }
 }

@@ -10,6 +10,7 @@
     <string name="title_activity_movie_detail">MovieDetailActivity</string>
 
     <!--MovieDB API Constants-->
+    <string name="moviedb_movie_id">id</string>
     <string name="moviedb_title_field">title</string>
     <string name="moviedb_poster_path_field">poster_path</string>
     <string name="movie_image_field">movie_image</string>
@@ -24,6 +25,8 @@
     <string name="moviedb_size_w500">w500/</string>
 
     <!--UI Strings-->
-    <string name="mark_as_favorites_button">Mark as favorite</string>
+    <string name="mark_as_favorites_button">Mark as Favorite</string>
+    <string name="youtube_web_url">http://www.youtube.com/watch?v=</string>
+    <string name="youtube_app_uri">vnd.youtube:</string>
 
 </resources>

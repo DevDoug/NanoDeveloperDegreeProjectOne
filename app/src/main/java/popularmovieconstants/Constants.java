@@ -1,6 +1,8 @@
 package popularmovieconstants;
 
 import android.widget.ListAdapter;
+
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import entity.Movie;
 import entity.Review;
@@ -15,5 +17,7 @@ public class Constants {
     public static ArrayList<Movie> mMovies;
     public static ArrayList<Review> mReviews;
     public static ArrayList<Trailer> mTrailers;
+
+    public static String YEAR_ONLY_DATE_FORMAT = "yyyy";
 
 }

@@ -1,8 +1,20 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="android:Theme.Holo.Light">
+    <style name="AppTheme" parent="android:Theme.Material.Light.DarkActionBar">
         <!-- Customize your theme here. -->
+<!--        <item name="android:actionBarStyle">@style/PopularMovieActionBar</item>-->
     </style>
 
+    <!-- Custom attributes for app theme-->
+    <style name="PopularMovieActionBar" parent="android:Theme.Material.Light.DarkActionBar">
+        <item name="android:background">@color/action_bar_color</item>
+    </style>
+    <style name="accent_button_style" parent="android:Widget.Button"><item name="android:background">@color/accent_color_button</item></style>
+
+
+    <!--app colors-->
+    <color name="accent_color_button">#86e4db</color>
+    <color name="action_bar_color">#000</color>
+    <color name="action_bar_overflow_color">#FFF</color>
 </resources>

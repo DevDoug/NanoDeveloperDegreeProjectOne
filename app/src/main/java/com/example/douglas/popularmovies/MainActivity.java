@@ -37,7 +37,7 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
         // Check whether we're recreating a previously destroyed instance
         if (savedInstanceState != null) {
             // Restore value of members from saved state
-            this.onTaskCompleted();
+            this.onFetchMovieTaskCompleted();
         } else {
            mDataFetcher.getMovies();
         }
@@ -78,6 +78,7 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) { //onclicking an item go to the detail view with and populate it with that moves data
         Intent movieDetailsIntent = new Intent(this,MovieDetailActivity.class);
         Movie selectedmovie = (Movie) view.findViewById(R.id.movie_image).getTag();
+        movieDetailsIntent.putExtra(getString(R.string.moviedb_movie_id), selectedmovie.getID());
         movieDetailsIntent.putExtra(getString(R.string.moviedb_title_field),selectedmovie.getTitle());
         movieDetailsIntent.putExtra(getString(R.string.moviedb_poster_path_field),selectedmovie.getPath());
         movieDetailsIntent.putExtra(getString(R.string.movie_image_field),selectedmovie.getPath());
@@ -88,10 +89,20 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
     }
 
     @Override
-    public void onTaskCompleted() {
+    public void onFetchMovieTaskCompleted() {
         if(Constants.mMovies != null) {
             Constants.mMoviesAdapter = new MovieAdapter(this, Constants.mMovies);
             mMoviesGrid.setAdapter(Constants.mMoviesAdapter);
         }
+    }
+
+    @Override
+    public void onFetchReviewsTaskCompleted() {
+
+    }
+
+    @Override
+    public void onFetchTrailerTaskCompleted() {
+
     }
 }

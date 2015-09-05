@@ -31,6 +31,7 @@ public class MovieDataParser {
 
         for(LinkedTreeMap map : moviedata.result){
             Movie movie = new Movie();
+            movie.setID(map.get("id").toString());
             movie.setTitle(map.get("title").toString());
             movie.setPath(map.get("poster_path").toString());
             movie.setOverview(map.get("overview").toString());
@@ -62,7 +63,20 @@ public class MovieDataParser {
 
     public static ArrayList<Trailer> getVideoData(VideoJSON videoData) {
 
+        LinkedTreeMap treemap = videoData.videos;
+        ArrayList<LinkedTreeMap> subtree = (ArrayList<LinkedTreeMap>) treemap.get("results");
+        ArrayList<Trailer> trailers = new ArrayList<>();
 
-        return null;
+        for(LinkedTreeMap map : subtree){
+            Trailer trailer = new Trailer();
+            trailer.setID(map.get("id").toString());
+            trailer.setKey(map.get("key").toString());
+            trailer.setName(map.get("name").toString());
+            trailer.setSite(map.get("site").toString());
+            trailer.setType(map.get("type").toString());
+            trailers.add(trailer);
+        }
+
+        return  trailers;
     }
 }

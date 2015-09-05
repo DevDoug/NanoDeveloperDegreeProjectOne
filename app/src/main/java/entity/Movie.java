@@ -10,6 +10,8 @@ import java.io.Serializable;
 
 public class Movie {
 
+    public String mID;
+
     public String mTitle;
 
     public String mPath;
@@ -19,6 +21,14 @@ public class Movie {
     public String mVoteAverage;
 
     public String mReleaseDate;
+
+    public String getID(){
+        return mID;
+    }
+
+    public void setID(String id){
+        this.mID = id;
+    }
 
     public String getPath() {
         return mPath;

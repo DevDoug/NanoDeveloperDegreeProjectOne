@@ -12,6 +12,9 @@ import java.util.Objects;
  */
 public class MovieJSON {
 
+    @SerializedName("id")
+    public String movieid;
+
     @SerializedName("page")
     public int page;
 
@@ -24,7 +27,8 @@ public class MovieJSON {
     @SerializedName("total_results")
     public int totalresults;
 
-    public MovieJSON(int page, int totalpages, int totalresults, ArrayList<LinkedTreeMap> objects) {
+    public MovieJSON(String id,int page, int totalpages, int totalresults, ArrayList<LinkedTreeMap> objects) {
+        this.movieid = id;
         this.page = page;
         this.result = objects;
         this.totalpages = totalpages;
