@@ -93,7 +93,6 @@
                         style="@style/accent_button_style"
                         android:text="@string/mark_as_favorites_button"
                         android:nestedScrollingEnabled="false"
-                        android:onClick="MarkAsFavorite"
                         android:layout_gravity="left|center"
                         android:layout_marginBottom="25dp" />
 

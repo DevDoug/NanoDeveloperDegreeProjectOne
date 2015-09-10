@@ -6,7 +6,7 @@
     <string name="picasso_url_popular_movies">http://api.themoviedb.org/3/discover/movie?sort_by=popularity.desc&amp;api_key=d273a1a1fb9390dab97ac0032b12366a</string>
 
     <!-- Menu items-->
-    <string name="action_label_sort">Sort</string>
+    <string name="action_label_sort" formatted="false">Sort by most popular</string>
     <string name="title_activity_movie_detail">MovieDetailActivity</string>
 
     <!--MovieDB API Constants-->
@@ -28,5 +28,10 @@
     <string name="mark_as_favorites_button">Mark as Favorite</string>
     <string name="youtube_web_url">http://www.youtube.com/watch?v=</string>
     <string name="youtube_app_uri">vnd.youtube:</string>
+    <string name="action_share_trailer">Share Trailer</string>
+    <string name="show_favorites_string">Show favorites</string>
+
+<!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>

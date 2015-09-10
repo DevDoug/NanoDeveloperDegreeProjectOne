@@ -4,9 +4,22 @@
     <item
         android:id="@+id/action_settings"
         android:title="@string/action_settings"
-        android:orderInCategory="100" app:showAsAction="never" />
+        android:orderInCategory="100"
+        app:showAsAction="never" />
 
     <item
         android:id="@+id/action_sort"
         android:title="@string/action_label_sort"/>
+
+    <item
+        android:id="@+id/action_show_favorites"
+        android:title="@string/show_favorites_string"
+        android:orderInCategory="101" />
+
+    <item
+        android:id="@+id/menu_item_share"
+        app:showAsAction="ifRoom"
+        android:title="Share"
+        android:actionProviderClass="android.widget.ShareActionProvider" />
+
 </menu>

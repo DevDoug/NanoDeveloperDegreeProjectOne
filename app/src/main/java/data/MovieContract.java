@@ -17,7 +17,7 @@ public class MovieContract {
     // relationship between a domain name and its website.  A convenient string to use for the
     // content authority is the package name for the app, which is guaranteed to be unique on the
     // device.
-    public static final String CONTENT_AUTHORITY = "com.example.android.nanodeveloperdegreeprojectone.app";
+    public static final String CONTENT_AUTHORITY = "com.example.douglas.popularmovies";
 
     // Use CONTENT_AUTHORITY to create the base of all URI's which apps will use to contact
     // the content provider.
@@ -41,8 +41,6 @@ public class MovieContract {
 
         public static final String TABLE_NAME = "movie";
         public static final String COLUMN_NAME_MOVIE_ID = "movieid";
-        public static final String COLUMN_NAME_MOVIE_REVIEW_FK = "review_id";
-        public static final String COLUMN_NAME_MOVIE_TRAILER_FK = "trailer_id";
         public static final String COLUMN_NAME_MOVIE_TITLE = "movietitle";
         public static final String COLUMN_NAME_MOVIE_PATH = "moviepath";
         public static final String COLUMN_NAME_MOVIE_OVERVIEW = "movieoverview";
@@ -67,6 +65,7 @@ public class MovieContract {
 
         public static final String TABLE_NAME = "review";
         public static final String COLUMN_NAME_REVIEW_ID = "reviewid";
+        public static final String COLUMN_NAME_REVIEW_MOVIE_FK = "movie_id";
         public static final String COLUMN_NAME_REVIEW_AUTHOR = "reviewauthor";
         public static final String COLUMN_NAME_REVIEW_CONTENT = "reviewcontent";
         public static final String COLUMN_NAME_REVIEW_URL = "reviewurl";
@@ -88,6 +87,13 @@ public class MovieContract {
 
         public static final String TABLE_NAME = "trailer";
         public static final String COLUMN_NAME_TRAILER_ID = "trailerid";
+        public static final String COLUMN_NAME_TRAILER_MOVIE_FK = "movie_id";
+        public static final String COLUMN_NAME_ISO = "traileriso";
+        public static final String COLUMN_NAME_KEY = "trailerkey";
+        public static final String COLUMN_NAME_NAME = "trailername";
+        public static final String COLUMN_NAME_SITE = "trailersite";
+        public static final String COLUMN_NAME_SIZE = "trailersize";
+        public static final String COLUMN_NAME_TYPE = "trailertype";
 
         public static Uri buildTrailerUri(long id) {
             return ContentUris.withAppendedId(CONTENT_URI, id);

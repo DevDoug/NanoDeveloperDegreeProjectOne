@@ -2,9 +2,12 @@ package com.example.douglas.popularmovies;
 
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
+import android.content.ContentUris;
+import android.content.ContentValues;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.Menu;
@@ -14,11 +17,15 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.ShareActionProvider;
 import android.widget.TextView;
 import com.squareup.picasso.Picasso;
 
+import java.net.URI;
+import java.security.Provider;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -26,26 +33,41 @@ import java.util.Locale;
 import adapters.MovieReviewAdapter;
 import adapters.MovieTrailerAdapter;
 import data.FetchMovieData;
+import data.MovieContract;
+import data.MovieDBContentProvider;
+import data.MovieDbHelper;
 import entity.Movie;
+import entity.Review;
+import entity.Trailer;
 import listeners.ITaskCompleteListener;
 import popularmovieconstants.Constants;
 
 public class MovieDetailActivity extends Activity implements ITaskCompleteListener, View.OnClickListener {
 
     public Movie mMovie = new Movie();
+    public ArrayList<Review> mReviews = new ArrayList<>();
+    public ArrayList<Trailer> mTrailers = new ArrayList<>();
+
     public TextView mMovieTitleText;
     public ImageView mMoviePoster;
     public TextView mMovieOverview;
     public TextView mMovieVoteAverageText;
     public TextView mMovieDateReleasedfield;
+
     public FetchMovieData mDataFetcher;
     public ListView mMovieTrailerList;
     public ListView mReviewList;
     public MovieTrailerAdapter mMovieTrailerAdapter;
     public MovieReviewAdapter mMovieReviewAdapter;
+
     public Button mReviewButton;
     public Button mTrailerButton;
+    public Button mFavoriteButton;
+
     public boolean mIsFavorited;
+    private Uri mUri;
+
+    private ShareActionProvider mShareActionProvider;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,6 +94,7 @@ public class MovieDetailActivity extends Activity implements ITaskCompleteListen
         mReviewList = (ListView) findViewById(R.id.movie_review_list);
         mReviewButton = (Button) findViewById(R.id.switch_to_review_button);
         mTrailerButton = (Button) findViewById(R.id.switch_to_trailer_button);
+        mFavoriteButton = (Button) findViewById(R.id.mark_as_favorites_button);
 
         mMovieTitleText.setText(mMovie.getTitle());
         mMovieOverview.setText(mMovie.getOverview());
@@ -84,11 +107,14 @@ public class MovieDetailActivity extends Activity implements ITaskCompleteListen
         mDataFetcher = new FetchMovieData(this,this);
         mDataFetcher.setReviewID(mMovie.getID());
         mDataFetcher.setTrailerID(mMovie.getID());
+
         mDataFetcher.getVideos();
         mDataFetcher.getReviews();
 
         mReviewButton.setOnClickListener(this);
         mTrailerButton.setOnClickListener(this);
+        mFavoriteButton.setOnClickListener(this);
+
         mMovieTrailerList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -111,6 +137,8 @@ public class MovieDetailActivity extends Activity implements ITaskCompleteListen
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_movie_detail, menu);
+        MenuItem item = menu.findItem(R.id.menu_item_share);
+        mShareActionProvider = (ShareActionProvider) item.getActionProvider();
         return true;
     }
 
@@ -121,8 +149,15 @@ public class MovieDetailActivity extends Activity implements ITaskCompleteListen
             saveMovieToFavorites();
     }
 
-    public void saveMovieToFavorites(){
+    public void saveMovieToFavorites() {
 
+        //TODO insure that the same movie is not favorited :)
+        //insert the movie record
+        Uri movieUri = this.getContentResolver().insert(MovieContract.MovieEntry.CONTENT_URI, Constants.createMovieRecord(mMovie));
+
+        long movieid = ContentUris.parseId(movieUri);
+        int insertedTrailerCount = this.getContentResolver().bulkInsert(MovieContract.TrailerEntry.CONTENT_URI, Constants.createBulkTrailerValues(Constants.mTrailers, movieid));
+        int insertedReviewCount = this.getContentResolver().bulkInsert(MovieContract.ReviewEntry.CONTENT_URI, Constants.createBulkReviewValues(Constants.mReviews, movieid));
     }
 
     @Override
@@ -137,11 +172,17 @@ public class MovieDetailActivity extends Activity implements ITaskCompleteListen
             return true;
         }
 
-        return super.onOptionsItemSelected(item);
-    }
+        //share first trailer
+        if(id == R.id.action_share_trailer) {
+            Intent shareIntent = new Intent();
+            shareIntent.setAction(Intent.ACTION_SEND);
+            shareIntent.putExtra(Intent.EXTRA_TEXT, getString(R.string.youtube_web_url) + mMovie.getID());
+            shareIntent.setType("text/plain");
+            startActivity(shareIntent);
+            mShareActionProvider.setShareIntent(shareIntent);
+        }
 
-    public void MarkAsFavorite() {
-        mIsFavorited = !mIsFavorited;
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -174,6 +215,8 @@ public class MovieDetailActivity extends Activity implements ITaskCompleteListen
                 mTrailerButton.setVisibility(View.GONE);
                 switchadaptertotrailers();
                 break;
+            case R.id.mark_as_favorites_button:
+                mIsFavorited = !mIsFavorited;
             default:
                 break;
         }
