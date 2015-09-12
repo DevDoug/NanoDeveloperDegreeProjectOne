@@ -1,12 +1,26 @@
 package com.example.douglas.popularmovies;
 
 import android.app.Activity;
+import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.ListView;
+import android.widget.TextView;
+
+import com.squareup.picasso.Picasso;
+
+import adapters.MovieReviewAdapter;
+import adapters.MovieTrailerAdapter;
+import data.FetchMovieData;
+import entity.Movie;
+import listeners.ITaskCompleteListener;
+import popularmovieconstants.Constants;
 
 
 /**
@@ -26,6 +40,24 @@ public class MovieDetailFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+
+    static int currentOrientation;
+
+    public Movie mCurrentMovie;
+    public TextView mMovieTitleText;
+    public ImageView mMoviePoster;
+    public TextView mMovieOverview;
+    public TextView mMovieVoteAverageText;
+    public TextView mMovieDateReleasedfield;
+
+   // public FetchMovieData mDataFetcher;
+    public ListView mMovieTrailerList;
+    public ListView mReviewList;
+
+    public Button mReviewButton;
+    public Button mTrailerButton;
+    public Button mFavoriteButton;
+
 
     private OnFragmentInteractionListener mListener;
 
@@ -58,18 +90,57 @@ public class MovieDetailFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+        currentOrientation = getResources().getConfiguration().orientation;
+    }
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+       // mDataFetcher = new FetchMovieData(getActivity().getApplicationContext(),this);
+        mReviewButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onButtonPressed(v);
+            }
+        });
+        mTrailerButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onButtonPressed(v);
+            }
+        });
+        mFavoriteButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onFavoritePressed(v);
+            }
+        });
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_movie_detail, container, false);
+        View mainView = inflater.inflate(R.layout.fragment_movie_detail, container, false);
+        mMovieTitleText = (TextView) mainView.findViewById(R.id.movie_title);
+        mMoviePoster = (ImageView) mainView.findViewById(R.id.movie_poster_detail);
+        mMovieOverview = (TextView) mainView.findViewById(R.id.movie_overview);
+        mMovieVoteAverageText = (TextView) mainView.findViewById(R.id.movie_average);
+        mMovieDateReleasedfield = (TextView) mainView.findViewById(R.id.movie_release_date_field);
+        mMovieTrailerList = (ListView) mainView.findViewById(R.id.movie_trailer_list);
+        mReviewList = (ListView) mainView.findViewById(R.id.movie_review_list);
+        mReviewButton = (Button) mainView.findViewById(R.id.switch_to_review_button);
+        mTrailerButton = (Button) mainView.findViewById(R.id.switch_to_trailer_button);
+        mFavoriteButton = (Button) mainView.findViewById(R.id.mark_as_favorites_button);
+        return mainView;
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
+    public void onButtonPressed(View v) {
         if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
+            mListener.onFragmentInteraction(v);
+        }
+    }
+    public void onFavoritePressed(View v) {
+        if (mListener != null) {
+            mListener.onFragmentInteraction(v,mCurrentMovie);
         }
     }
 
@@ -101,11 +172,27 @@ public class MovieDetailFragment extends Fragment {
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        public void onFragmentInteraction(Uri uri);
+        public void onFragmentInteraction(View v);
+        public void onFragmentInteraction(View v,Movie m);
     }
 
     public void updateContent(int position) {
-
+        Movie selectedMovie = Constants.mMovies.get(position);
+        mCurrentMovie = selectedMovie;
+        mMovieTitleText.setText(selectedMovie.getTitle());
+        mMovieOverview.setText(selectedMovie.getOverview());
+        mMovieVoteAverageText.setText(String.format(getString(R.string.movie_rating_date), selectedMovie.getVoteAverage()));
+        mMovieDateReleasedfield.setText(selectedMovie.getReleaseDate().split("-")[0]);
+        if (currentOrientation == Configuration.ORIENTATION_LANDSCAPE) {
+            // Landscape
+            String movieposterurllarge = (this.getString(R.string.moviedb_poster_base_url).concat(this.getString(R.string.moviedb_size_w185)).concat(selectedMovie.getPath()));
+            Picasso.with(getActivity().getApplicationContext()).load(movieposterurllarge).into(mMoviePoster);
+        }
+        else {
+            // Portrait
+            String movieposterurllarge = (this.getString(R.string.moviedb_poster_base_url).concat(this.getString(R.string.moviedb_size_w342)).concat(selectedMovie.getPath()));
+            Picasso.with(getActivity().getApplicationContext()).load(movieposterurllarge).into(mMoviePoster);
+        }
+        ((MainActivity)getActivity()).retrieveReviewsAndTrailersForFragment(selectedMovie.getID());
     }
 }

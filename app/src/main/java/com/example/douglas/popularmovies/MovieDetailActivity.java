@@ -9,7 +9,9 @@ import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.database.Cursor;
 import android.net.Uri;
+import android.nfc.Tag;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -44,9 +46,8 @@ import popularmovieconstants.Constants;
 
 public class MovieDetailActivity extends Activity implements ITaskCompleteListener, View.OnClickListener {
 
+    private static final String TAG = "MovieDetalActivity";
     public Movie mMovie = new Movie();
-    public ArrayList<Review> mReviews = new ArrayList<>();
-    public ArrayList<Trailer> mTrailers = new ArrayList<>();
 
     public TextView mMovieTitleText;
     public ImageView mMoviePoster;
@@ -65,7 +66,6 @@ public class MovieDetailActivity extends Activity implements ITaskCompleteListen
     public Button mFavoriteButton;
 
     public boolean mIsFavorited;
-    private Uri mUri;
 
     private ShareActionProvider mShareActionProvider;
 
@@ -150,14 +150,20 @@ public class MovieDetailActivity extends Activity implements ITaskCompleteListen
     }
 
     public void saveMovieToFavorites() {
+        //check for movie in favorites to avoid duplicates
+        Cursor moviecursor = this.getContentResolver().query(MovieContract.MovieEntry.CONTENT_URI,null,MovieContract.MovieEntry.COLUMN_NAME_MOVIE_ID + " = " + mMovie.getID(), null,null,null);
+        if(moviecursor.getCount() == 0) { // first time this movie has been favorited insert record
+            Uri movieUri = this.getContentResolver().insert(MovieContract.MovieEntry.CONTENT_URI, Constants.createMovieRecord(mMovie));
+            long movieid = ContentUris.parseId(movieUri);
+            int insertedTrailerCount = this.getContentResolver().bulkInsert(MovieContract.TrailerEntry.CONTENT_URI, Constants.createBulkTrailerValues(Constants.mTrailers, movieid));
+            int insertedReviewCount = this.getContentResolver().bulkInsert(MovieContract.ReviewEntry.CONTENT_URI, Constants.createBulkReviewValues(Constants.mReviews, movieid));
 
-        //TODO insure that the same movie is not favorited :)
-        //insert the movie record
-        Uri movieUri = this.getContentResolver().insert(MovieContract.MovieEntry.CONTENT_URI, Constants.createMovieRecord(mMovie));
+            if(insertedTrailerCount < 1)
+                Log.e(TAG,"Trailer failed to insert");
 
-        long movieid = ContentUris.parseId(movieUri);
-        int insertedTrailerCount = this.getContentResolver().bulkInsert(MovieContract.TrailerEntry.CONTENT_URI, Constants.createBulkTrailerValues(Constants.mTrailers, movieid));
-        int insertedReviewCount = this.getContentResolver().bulkInsert(MovieContract.ReviewEntry.CONTENT_URI, Constants.createBulkReviewValues(Constants.mReviews, movieid));
+            if(insertedReviewCount < 1)
+                Log.e(TAG, " Review failed to insert");
+        }
     }
 
     @Override
@@ -173,7 +179,7 @@ public class MovieDetailActivity extends Activity implements ITaskCompleteListen
         }
 
         //share first trailer
-        if(id == R.id.action_share_trailer) {
+        if(id == R.id.menu_item_share) {
             Intent shareIntent = new Intent();
             shareIntent.setAction(Intent.ACTION_SEND);
             shareIntent.putExtra(Intent.EXTRA_TEXT, getString(R.string.youtube_web_url) + mMovie.getID());
@@ -207,12 +213,8 @@ public class MovieDetailActivity extends Activity implements ITaskCompleteListen
         switch (v.getId()) {
             case R.id.switch_to_review_button:
                 switchadaptertoreviews();
-                mReviewButton.setVisibility(View.GONE);
-                mTrailerButton.setVisibility(View.VISIBLE);
                 break;
             case R.id.switch_to_trailer_button:
-                mReviewButton.setVisibility(View.VISIBLE);
-                mTrailerButton.setVisibility(View.GONE);
                 switchadaptertotrailers();
                 break;
             case R.id.mark_as_favorites_button:
@@ -223,11 +225,17 @@ public class MovieDetailActivity extends Activity implements ITaskCompleteListen
     }
 
     public void switchadaptertoreviews(){
+        mReviewButton.setVisibility(View.GONE);
+        mTrailerButton.setVisibility(View.VISIBLE);
+
         mMovieTrailerList.setVisibility(View.INVISIBLE);
         mReviewList.setVisibility(View.VISIBLE);
     }
 
     public void switchadaptertotrailers(){
+        mReviewButton.setVisibility(View.VISIBLE);
+        mTrailerButton.setVisibility(View.GONE);
+
         mMovieTrailerList.setVisibility(View.VISIBLE);
         mReviewList.setVisibility(View.INVISIBLE);
     }

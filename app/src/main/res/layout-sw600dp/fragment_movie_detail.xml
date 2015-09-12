@@ -55,7 +55,8 @@
                     android:layout_weight=".5"
                     android:id="@+id/movie_poster_detail"
                     android:src="@drawable/placeholder"
-                    android:layout_marginRight="5dp" />
+                    android:layout_marginRight="5dp"
+                    android:scaleType="fitCenter" />
 
                 <LinearLayout
                     android:orientation="vertical"

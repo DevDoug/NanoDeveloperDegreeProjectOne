@@ -57,7 +57,7 @@ public class Constants {
         values.put(MovieContract.TrailerEntry.COLUMN_NAME_NAME, trailer.getName());
         values.put(MovieContract.TrailerEntry.COLUMN_NAME_SITE, trailer.getSite());
         values.put(MovieContract.TrailerEntry.COLUMN_NAME_SIZE, trailer.getSize());
-        values.put(MovieContract.TrailerEntry.COLUMN_NAME_TYPE, trailer.getType());
+       // values.put(MovieContract.TrailerEntry.COLUMN_NAME_TYPE, trailer.getType());
         return values;
     }
 

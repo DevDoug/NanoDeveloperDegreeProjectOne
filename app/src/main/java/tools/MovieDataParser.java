@@ -1,12 +1,15 @@
 package tools;
 
 import android.provider.MediaStore;
+import android.text.TextUtils;
 
 import com.google.gson.internal.LinkedTreeMap;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.w3c.dom.Text;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -31,9 +34,9 @@ public class MovieDataParser {
 
         for(LinkedTreeMap map : moviedata.result){
             Movie movie = new Movie();
-            movie.setID(map.get("id").toString());
+            movie.setID((map.get("id") != null) ? map.get("id").toString() : null);
             movie.setTitle(map.get("title").toString());
-            movie.setPath(map.get("poster_path").toString());
+            movie.setPath((map.get("poster_path") != null) ? map.get("poster_path").toString():null);
             movie.setOverview(map.get("overview").toString());
             movie.setReleaseDate(map.get("release_date").toString());
             movie.setVoteAverage(map.get("vote_average").toString());

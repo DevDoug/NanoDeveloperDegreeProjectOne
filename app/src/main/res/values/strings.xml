@@ -22,7 +22,9 @@
     <string name="moviedb_base_url">http://image.tmdb.org/t/p/</string>
     <string name="moviedb_poster_base_url">http://image.tmdb.org/t/p/</string>
     <string name="moviedb_size_w185">w185/</string>
+    <string name="moviedb_size_w342">w342</string>
     <string name="moviedb_size_w500">w500/</string>
+    <string name="moviedb_size_w780">w780</string>
 
     <!--UI Strings-->
     <string name="mark_as_favorites_button">Mark as Favorite</string>

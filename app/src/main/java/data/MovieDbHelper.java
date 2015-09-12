@@ -9,7 +9,7 @@ import android.database.sqlite.SQLiteOpenHelper;
  */
 public class MovieDbHelper extends SQLiteOpenHelper {
     // If you change the database schema, you must increment the database version.
-    public static final int DATABASE_VERSION = 1;
+    public static final int DATABASE_VERSION = 4;
     public static final String DATABASE_NAME = "Movie.db";
 
     public MovieDbHelper(Context context) {
@@ -47,11 +47,12 @@ public class MovieDbHelper extends SQLiteOpenHelper {
                 MovieContract.TrailerEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
                 MovieContract.TrailerEntry.COLUMN_NAME_TRAILER_ID + " INTEGER NOT NULL," +
                 MovieContract.TrailerEntry.COLUMN_NAME_TRAILER_MOVIE_FK + " INTEGER NOT NULL," +
-                MovieContract.TrailerEntry.COLUMN_NAME_ISO + " TEXT NOT NULL," +
-                MovieContract.TrailerEntry.COLUMN_NAME_KEY + " TEXT NOT NULL," +
-                MovieContract.TrailerEntry.COLUMN_NAME_NAME + " TEXT NOT NULL," +
-                MovieContract.TrailerEntry.COLUMN_NAME_SITE + " TEXT NOT NULL," +
-                MovieContract.TrailerEntry.COLUMN_NAME_SIZE + " TEXT NOT NULL," +
+                MovieContract.TrailerEntry.COLUMN_NAME_ISO + " TEXT NULL," +
+                MovieContract.TrailerEntry.COLUMN_NAME_KEY + " TEXT NULL," +
+                MovieContract.TrailerEntry.COLUMN_NAME_NAME + " TEXT NULL," +
+                MovieContract.TrailerEntry.COLUMN_NAME_SITE + " TEXT NULL," +
+                MovieContract.TrailerEntry.COLUMN_NAME_SIZE + " TEXT NULL," +
+                MovieContract.TrailerEntry.COLUMN_NAME_TYPE + "TEXT NULL," +
 
                 // Set up the movie trailer fk column as a foreign key to movie table.
                 " FOREIGN KEY (" + MovieContract.TrailerEntry.COLUMN_NAME_TRAILER_MOVIE_FK + ") REFERENCES " +

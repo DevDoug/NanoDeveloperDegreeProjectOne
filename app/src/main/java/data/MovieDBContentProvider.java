@@ -68,8 +68,6 @@ public class MovieDBContentProvider extends ContentProvider {
 
     @Override
     public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
-        // Here's the switch statement that, given a URI, will determine what kind of request it is,
-        // and query the database accordingly.
         Cursor retCursor;
         switch (sUriMatcher.match(uri)) {
             case MOVIE: {
@@ -251,7 +249,7 @@ public class MovieDBContentProvider extends ContentProvider {
                 int returnCountReview = 0;
                 try {
                     for (ContentValues value : values) {
-                        long _id = db.insert(MovieContract.MovieEntry.TABLE_NAME, null, value);
+                        long _id = db.insert(MovieContract.ReviewEntry.TABLE_NAME, null, value);
                         if (_id != -1) {
                             returnCountReview++;
                         }
@@ -267,7 +265,7 @@ public class MovieDBContentProvider extends ContentProvider {
                 int returnCountTrailer = 0;
                 try {
                     for (ContentValues value : values) {
-                        long _id = db.insert(MovieContract.MovieEntry.TABLE_NAME, null, value);
+                        long _id = db.insert(MovieContract.TrailerEntry.TABLE_NAME, null, value);
                         if (_id != -1) {
                             returnCountTrailer++;
                         }

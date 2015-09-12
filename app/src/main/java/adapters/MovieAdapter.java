@@ -37,12 +37,14 @@ public class MovieAdapter extends ArrayAdapter {
 
         ImageView image = (ImageView) convertView.findViewById(R.id.movie_image);
         ImageView imagelarge = (ImageView) convertView.findViewById(R.id.movie_image_large);
-        String movieposterurl = (mContext.getString(R.string.moviedb_poster_base_url).concat(mContext.getString(R.string.moviedb_size_w185)).concat(mItems.get(position).getPath()));
-        String movieposterurllarge = (mContext.getString(R.string.moviedb_poster_base_url).concat(mContext.getString(R.string.moviedb_size_w500)).concat(mItems.get(position).getPath()));
-        Picasso.with(mContext).load(movieposterurl).into(image);
-        Picasso.with(mContext).load(movieposterurllarge).into(imagelarge);
-        image.setTag(mItems.get(position));
-
+        String path = mItems.get(position).getPath();
+        if(path != null){
+            String movieposterurl = (mContext.getString(R.string.moviedb_poster_base_url).concat(mContext.getString(R.string.moviedb_size_w185)).concat(path));
+            String movieposterurllarge = (mContext.getString(R.string.moviedb_poster_base_url).concat(mContext.getString(R.string.moviedb_size_w500)).concat(path));
+            Picasso.with(mContext).load(movieposterurl).into(image);
+            Picasso.with(mContext).load(movieposterurllarge).into(imagelarge);
+            image.setTag(mItems.get(position));
+        }
         return convertView;
     }
 }
